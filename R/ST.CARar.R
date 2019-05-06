@@ -1,4 +1,4 @@
-ST.CARar <- function(formula, family, data=NULL,  trials=NULL, W, burnin, n.sample, thin=1, prior.mean.beta=NULL, prior.var.beta=NULL, prior.nu2=NULL, prior.tau2=NULL, rho.S=NULL, rho.T=NULL, MALA=TRUE, verbose=TRUE, rho.init = 0.30,
+ST.CARar <- function(formula, family, data=NULL,  trials=NULL, W, burnin, n.sample, thin=1, prior.mean.beta=NULL, prior.var.beta=NULL, prior.nu2=NULL, prior.tau2=NULL, rho.S=NULL, rho.T=NULL, MALA=TRUE, verbose=TRUE, rho.init, proposal.sd.rho,
                           proposal.sd.beta = 0.01)
 {
     ## This is a wrapper function for the following three functions.
@@ -19,7 +19,7 @@ ST.CARar <- function(formula, family, data=NULL,  trials=NULL, W, burnin, n.samp
     }else if(family=="poisson")
     {
         if(!is.null(trials)) stop("you do not need a trials arugment as a binomial model was not specified", call.=FALSE)
-        model <- poisson.CARar(formula=formula, data=data,  W=W, burnin=burnin, n.sample=n.sample, thin=thin, prior.mean.beta=prior.mean.beta, prior.var.beta=prior.var.beta, prior.tau2=prior.tau2, rho.S=rho.S, rho.T=rho.T, MALA=MALA, verbose=verbose)          
+        model <- poisson.CARar(formula=formula, data=data,  W=W, burnin=burnin, n.sample=n.sample, thin=thin, prior.mean.beta=prior.mean.beta, prior.var.beta=prior.var.beta, prior.tau2=prior.tau2, rho.S=rho.S, rho.T=rho.T, MALA=MALA, verbose=verbose, rho.init = rho.init, proposal.sd.rho = proposal.sd.rho)          
     }else
     {
         stop("the family arugment is not one of `binomial', `gaussian' or `poisson'.", call.=FALSE)     
