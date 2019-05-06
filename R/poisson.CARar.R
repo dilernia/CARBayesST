@@ -2,8 +2,10 @@ poisson.CARar <- function(formula, data=NULL, W, burnin, n.sample, thin=1,
                           prior.mean.beta=NULL, prior.var.beta=NULL, 
                           prior.tau2=NULL, rho.S=NULL, rho.T=NULL, MALA=TRUE, 
                           verbose=TRUE, proposal.sd.phi = 0.1,
-                          proposal.sd.rho = 0.05,
-                          rho.init = 0.30,
+                          proposal.sd.rho.S = 0.05,
+                          proposal.sd.rho.T = NULL,
+                          rho.S.init = 0.30,
+                          rho.T.init = 0.30,
                           proposal.sd.beta = 0.01)
 {
   ##############################################
@@ -37,7 +39,7 @@ poisson.CARar <- function(formula, data=NULL, W, burnin, n.sample, thin=1,
   #### Check on the rho arguments
   if(is.null(rho.S))
   {
-    rho <- rho.init
+    rho <- rho.S.init
     fix.rho.S <- FALSE   
   }else
   {
@@ -50,7 +52,7 @@ poisson.CARar <- function(formula, data=NULL, W, burnin, n.sample, thin=1,
   
   if(is.null(rho.T))
   {
-    gamma <- runif(1)
+    gamma <- rho.T.init
     fix.rho.T <- FALSE   
   }else
   {
@@ -256,7 +258,11 @@ poisson.CARar <- function(formula, data=NULL, W, burnin, n.sample, thin=1,
     {
       temp2 <- gammaquadformcompute(W.triplet, W.triplet.sum, W.n.triplet,  K, N, phi.mat, rho)
       mean.gamma <- temp2[[1]] / temp2[[2]]
+      if(is.null(proposal.sd.rho.T)) {
       sd.gamma <- sqrt(tau2 / temp2[[2]]) 
+        } else {
+        sd.gamma <- proposal.sd.rho.T
+        }
       gamma <- rtruncnorm(n=1, a=0, b=1, mean=mean.gamma, sd=sd.gamma)   
     }else
     {}
@@ -277,7 +283,7 @@ poisson.CARar <- function(formula, data=NULL, W, burnin, n.sample, thin=1,
     ##################
     if(!fix.rho.S)
     {
-      proposal.rho <- rtruncnorm(n=1, a=0, b=1, mean=rho, sd=proposal.sd.rho)
+      proposal.rho <- rtruncnorm(n=1, a=0, b=1, mean=rho, sd=proposal.sd.rho.S)
       temp4 <- tauquadformcompute(W.triplet, W.triplet.sum, W.n.triplet,  K, N, phi.mat, proposal.rho, gamma)
       det.Q.W.proposal <- 0.5 * sum(log((proposal.rho * Wstar.val + (1-proposal.rho))))
       logprob.current <- N * det.Q.W - temp3 / tau2
@@ -339,7 +345,7 @@ poisson.CARar <- function(formula, data=NULL, W, burnin, n.sample, thin=1,
         proposal.sd.beta <- common.accceptrates1(accept[1:2], proposal.sd.beta, 30, 40)    
       }
       proposal.sd.phi <- common.accceptrates1(accept[3:4], proposal.sd.phi, 40, 50)
-      if(!fix.rho.S) proposal.sd.rho <- common.accceptrates2(accept[5:6], proposal.sd.rho, 40, 50, 0.5) 
+      if(!fix.rho.S) proposal.sd.rho.S <- common.accceptrates2(accept[5:6], proposal.sd.rho.S, 40, 50, 0.5) 
       accept.all <- accept.all + accept
       accept <- rep(0,6)  
     }else
