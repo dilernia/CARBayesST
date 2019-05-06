@@ -1,4 +1,6 @@
-ST.CARar <- function(formula, family, data=NULL,  trials=NULL, W, burnin, n.sample, thin=1, prior.mean.beta=NULL, prior.var.beta=NULL, prior.nu2=NULL, prior.tau2=NULL, rho.S=NULL, rho.T=NULL, MALA=TRUE, verbose=TRUE, rho.init = NULL, proposal.sd.rho = NULL,
+ST.CARar <- function(formula, family, data=NULL,  trials=NULL, W, burnin, n.sample, thin=1, prior.mean.beta=NULL, 
+                     prior.var.beta=NULL, prior.nu2=NULL, prior.tau2=NULL, rho.S=NULL, rho.T=NULL, MALA=TRUE, 
+                     verbose=TRUE, rho.S.init = NULL, rho.T.init = NULL, proposal.sd.rho.S = 0.05, proposal.sd.rho.T = 0.05,
                           proposal.sd.beta = 0.01)
 {
     ## This is a wrapper function for the following three functions.
